@@ -2,6 +2,8 @@ var renderer, scene, camera;
 
 var drawCount;
 var mesh;
+var pencil;
+var positionx;
 
 var h = 200;
 var amplitude = h;
@@ -15,7 +17,7 @@ animate();
 function init() {
 
 	// renderer
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer({ alpha: true });
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
@@ -25,15 +27,28 @@ function init() {
 	camera.position.set(0, 0, 800);
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
 
+  
 	// scene
 	scene = new THREE.Scene();
 	
+  
+   var light = new THREE.AmbientLight( "#F8845E", .8 ); 
+  scene.add( light );
+  var hemilight = new THREE.HemisphereLight( "#B82D98", "#26688F", 1.7 );
+  scene.add( hemilight ); 
+  dirLight = new THREE.DirectionalLight( 0xffffff, .6 );
+		dirLight.color.setHSL( 0.1, 1, 0.95 );
+		dirLight.position.set( -1, 1.75, 1 );
+		dirLight.position.multiplyScalar( 50 ); 
+		scene.add( dirLight );
+
 	// geometry
 	var geometry = new THREE.BufferGeometry();
 	var vertices = new Float32Array( 1500 );
 
 	geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-	var material = new THREE.LineBasicMaterial( { color: "#00ffff", linewidth: 5 } );
+	var material = new THREE.LineBasicMaterial( { color: "#000", linewidth: 5 } );
+ 
 
 	// draw range
 	drawCount = 0; // draw the first 2 points, only
@@ -47,15 +62,23 @@ function init() {
 
 	// load json file
 	var loader = new THREE.JSONLoader();
-	loader.load('./pencil.json', generateMesh );
+	loader.load('https://raw.githubusercontent.com/ellenprobst/3d-sine-wave/master/pencil.json', generateMesh );
 }
 
-// load pencil
+ 
+// load pencil 
 function generateMesh(geometry, material){
 	geometry.computeVertexNormals();
-    var pencil = new THREE.Mesh(geometry, material);
+  pencil = new THREE.Mesh(geometry, material);
+  //pencil.rotation.z = .3;
+  pencil.scale.y = pencil.scale.z = pencil.scale.x = 80;
+  pencil.position.x = -40;
+  pencil.position.y = 120;
 	scene.add(pencil);
-}
+  console.log(positionx)
+ 
+   
+} 
 
 // set up sine wave
 function updatePositions(){
@@ -72,6 +95,7 @@ function updatePositions(){
 		
 		y ++;
 		var x = Math.sin(-y * frequency + phi) * amplitude / 2 + amplitude / 2;
+		positionx = x;
 	}
 };
 
@@ -85,14 +109,16 @@ function animate() {
 	
 	requestAnimationFrame( animate );
 
+  
+ 
+  //draw sine
 	mesh.geometry.setDrawRange( 0, 500 );
 	updatePositions();
 	mesh.geometry.attributes.position.needsUpdate = true; 
-	// mesh.rotation.x += 0.02;
-	// mesh.rotation.z += 0.02;
+     TweenMax.to(pencil.position, 1, {x:positionx});
 
 	render();
-}
-
+} 
+ 
 
 
