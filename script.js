@@ -30,6 +30,7 @@ function init() {
   
 	// scene
 	scene = new THREE.Scene();
+	scene.updateMatrixWorld();
 	
   
    var light = new THREE.AmbientLight( "#F8845E", .8 ); 
@@ -62,7 +63,7 @@ function init() {
 
 	// load json file
 	var loader = new THREE.JSONLoader();
-	loader.load('https://raw.githubusercontent.com/ellenprobst/3d-sine-wave/master/pencil.json', generateMesh );
+	loader.load('./pencil.json', generateMesh );
 }
 
  
@@ -72,10 +73,10 @@ function generateMesh(geometry, material){
   pencil = new THREE.Mesh(geometry, material);
   //pencil.rotation.z = .3;
   pencil.scale.y = pencil.scale.z = pencil.scale.x = 80;
-  pencil.position.x = -40;
-  pencil.position.y = 120;
+  pencil.position.x = 217;
+  pencil.position.y = 150;
 	scene.add(pencil);
-  console.log(positionx)
+  
  
    
 } 
@@ -83,7 +84,7 @@ function generateMesh(geometry, material){
 // set up sine wave
 function updatePositions(){
 	var positions = mesh.geometry.attributes.position.array; 
-	var y = z = index = 0;
+	var y = z = x = index = 0;
 	frames++
 	phi = frames / 20;
 
@@ -96,6 +97,7 @@ function updatePositions(){
 		y ++;
 		var x = Math.sin(-y * frequency + phi) * amplitude / 2 + amplitude / 2;
 		positionx = x;
+
 	}
 };
 
@@ -115,8 +117,8 @@ function animate() {
 	mesh.geometry.setDrawRange( 0, 500 );
 	updatePositions();
 	mesh.geometry.attributes.position.needsUpdate = true; 
-     TweenMax.to(pencil.position, 1, {x:positionx});
-
+     //TweenMax.to(pencil.position, 1, {x:positionx});
+     
 	render();
 } 
  
