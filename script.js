@@ -22,6 +22,7 @@ function init() {
 	renderer = new THREE.WebGLRenderer({ alpha: true });
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.shadowMap.enabled = true;
 	document.body.appendChild(renderer.domElement);
 
 	// camera
@@ -59,8 +60,8 @@ function init() {
 
 	// sine wave
 	wave = new THREE.Line(geometry, material);
-	wave.rotation.x = Math.PI / 2;
-	//scene.add(wave);
+	wave.rotation.x = -Math.PI / 2;
+	
 	updatePositions();
 
 
@@ -73,9 +74,8 @@ function init() {
 	group.add(wave);
 
 	scene.add(group);
-  	//group.rotation.y = group.rotation.x = group.rotation.z = .6;
   	
-  	plane();
+  	//plane();
 
 };
 
@@ -84,7 +84,9 @@ function plane(){
 	var geometry = new THREE.BoxGeometry( 300, 1, 300 );
 	var material = new THREE.MeshBasicMaterial( {color: '#008b8b'} );
 	var plane = new THREE.Mesh( geometry, material );
+	plane.receiveShadow = true;
 	plane.position.y = -2;
+	
 	group.add( plane );
 }; 
  
@@ -94,15 +96,13 @@ function generatePencil(geometry, material){
 	pencil = new THREE.Mesh(geometry, material);
 	pencil.rotation.x = 0;
 	pencil.scale.y = pencil.scale.z = pencil.scale.x = 4;
-	// pencil.position.x = 500;
-	pencil.position.y = 0;
-	//pencil.position.z = 82;
-	//pencil.rotation.x = Math.PI / 2;
+	pencil.position.y = -8;
+	//pencil.position.x = 0;
+	pencil.position.z = 8;
+	
+	pencil.rotation.x = .5;
 	group.add(pencil);
 }; 
-
-
-
 
 // set up sine wave
 function updatePositions(){
@@ -111,15 +111,15 @@ function updatePositions(){
 	frames++
 	phi = frames / 20;
 
-	for ( var i = 0, l = 500; i < l; i ++ ) {
+	for ( var i = 0, l = 630; i < l; i ++ ) {
 
 		positions[ index ++ ] = x;
 		positions[ index ++ ] = y;
 		positions[ index ++ ] = z;
 		
 		y ++;
-		var x = Math.sin(-y * frequency + phi) * amplitude / 2 + amplitude / 2;
-		positionx = x ;
+		var x = Math.sin(-y * frequency + phi) * amplitude / 2 ;
+		positionx = x + 8 ; // add offset to match pencil position
 	}
 };
 
@@ -131,6 +131,7 @@ function onMouseMove(event) {
   mouseX = (event.clientX / window.innerWidth) * 2 - 1;
   mouseY = - (event.clientY / window.innerHeight) * 2 + 1;
 };
+
 
 // render
 function render() {
@@ -145,13 +146,13 @@ function animate() {
     pencil ? pencil.position.x = positionx : null;
  
   //draw sine
-	wave.geometry.setDrawRange( 0, 500 );
+	wave.geometry.setDrawRange( 0, 630 );
 	updatePositions();
 	wave.geometry.attributes.position.needsUpdate = true; 
 	
-
-			group.rotation.y = mouseX * 2;
-			group.rotation.x = mouseY * 2;
+	group.rotation.y += .002;
+	group.rotation.z += .001;
+	group.rotation.x += .003;
 		
 
 	render();
