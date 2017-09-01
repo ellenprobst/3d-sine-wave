@@ -1,15 +1,17 @@
-var renderer, scene, camera;
+var renderer, scene, camera, group;
+var mouseX = 0;
+var mouseY= 0;
 
 var drawCount;
-var mesh;
+var wave;
 var pencil;
-var positionx;
+var positionx =0 ;
 
 var h = 200;
 var amplitude = h;
 var frequency = .02;
 var phi = 0;
-var frames = 0;
+var frames = 0; 
 
 init();
 animate();  
@@ -31,19 +33,18 @@ function init() {
 	// scene
 	scene = new THREE.Scene();
 	scene.updateMatrixWorld();
-	
   
-   var light = new THREE.AmbientLight( "#F8845E", .8 ); 
-  scene.add( light );
-  var hemilight = new THREE.HemisphereLight( "#B82D98", "#26688F", 1.7 );
-  scene.add( hemilight ); 
-  dirLight = new THREE.DirectionalLight( 0xffffff, .6 );
+	var light = new THREE.AmbientLight( "#F8845E", .8 ); 
+	scene.add( light );
+	var hemilight = new THREE.HemisphereLight( "#B82D98", "#26688F", 1.7 );
+	scene.add( hemilight ); 
+	dirLight = new THREE.DirectionalLight( 0xffffff, .6 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
 		dirLight.position.set( -1, 1.75, 1 );
 		dirLight.position.multiplyScalar( 50 ); 
 		scene.add( dirLight );
 
-	// geometry
+	// sine wave geometry 
 	var geometry = new THREE.BufferGeometry();
 	var vertices = new Float32Array( 1500 );
 
@@ -56,35 +57,57 @@ function init() {
 	geometry.setDrawRange( 0, drawCount );
 
 
-	// mesh
-	mesh = new THREE.Line(geometry, material);
-	scene.add(mesh);
+	// sine wave
+	wave = new THREE.Line(geometry, material);
+	wave.rotation.x = Math.PI / 2;
+	//scene.add(wave);
 	updatePositions();
+
+
 
 	// load json file
 	var loader = new THREE.JSONLoader();
-	loader.load('./pencil.json', generateMesh );
-}
+	loader.load('https://raw.githubusercontent.com/ellenprobst/3d-sine-wave/master/pencil.json', generatePencil );
 
+	group = new THREE.Group();
+	group.add(wave);
+
+	scene.add(group);
+  	//group.rotation.y = group.rotation.x = group.rotation.z = .6;
+  	
+  	plane();
+
+};
+
+// generate plane
+function plane(){
+	var geometry = new THREE.BoxGeometry( 300, 1, 300 );
+	var material = new THREE.MeshBasicMaterial( {color: '#008b8b'} );
+	var plane = new THREE.Mesh( geometry, material );
+	plane.position.y = -2;
+	group.add( plane );
+}; 
  
 // load pencil 
-function generateMesh(geometry, material){
+function generatePencil(geometry, material){
 	geometry.computeVertexNormals();
-  pencil = new THREE.Mesh(geometry, material);
-  //pencil.rotation.z = .3;
-  pencil.scale.y = pencil.scale.z = pencil.scale.x = 80;
-  pencil.position.x = 217;
-  pencil.position.y = 150;
-	scene.add(pencil);
-  
- 
-   
-} 
+	pencil = new THREE.Mesh(geometry, material);
+	pencil.rotation.x = 0;
+	pencil.scale.y = pencil.scale.z = pencil.scale.x = 4;
+	// pencil.position.x = 500;
+	pencil.position.y = 0;
+	//pencil.position.z = 82;
+	//pencil.rotation.x = Math.PI / 2;
+	group.add(pencil);
+}; 
+
+
+
 
 // set up sine wave
 function updatePositions(){
-	var positions = mesh.geometry.attributes.position.array; 
-	var y = z = x = index = 0;
+	var positions = wave.geometry.attributes.position.array; 
+	var y = z = index = 0;
 	frames++
 	phi = frames / 20;
 
@@ -96,31 +119,43 @@ function updatePositions(){
 		
 		y ++;
 		var x = Math.sin(-y * frequency + phi) * amplitude / 2 + amplitude / 2;
-		positionx = x;
-
+		positionx = x ;
 	}
+};
+
+document.addEventListener('mousemove', onMouseMove, false);
+
+// Follows the mouse event
+function onMouseMove(event) {
+  event.preventDefault();
+  mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+  mouseY = - (event.clientY / window.innerHeight) * 2 + 1;
 };
 
 // render
 function render() {
   	renderer.render( scene, camera );
-}
+};
 
 // animate
 function animate() {
 	
 	requestAnimationFrame( animate );
-
-  
+ // position pencil on sine wave
+    pencil ? pencil.position.x = positionx : null;
  
   //draw sine
-	mesh.geometry.setDrawRange( 0, 500 );
+	wave.geometry.setDrawRange( 0, 500 );
 	updatePositions();
-	mesh.geometry.attributes.position.needsUpdate = true; 
-     //TweenMax.to(pencil.position, 1, {x:positionx});
-     
+	wave.geometry.attributes.position.needsUpdate = true; 
+	
+
+			group.rotation.y = mouseX * 2;
+			group.rotation.x = mouseY * 2;
+		
+
 	render();
-} 
+}; 
  
 
 
