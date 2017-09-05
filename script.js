@@ -68,7 +68,7 @@ function init() {
 
 	// load json file
 	var loader = new THREE.JSONLoader();
-	loader.load('https://raw.githubusercontent.com/ellenprobst/3d-sine-wave/master/pencil.json', generatePencil );
+	loader.load('https://raw.githubusercontent.com/ellenprobst/3d-sine-wave/master/handandpencil.json', generatePencil );
 
 	group = new THREE.Group();
 	group.add(wave);
@@ -94,30 +94,30 @@ function plane(){
 function generatePencil(geometry, material){
 	geometry.computeVertexNormals();
 	pencil = new THREE.Mesh(geometry, material);
-	pencil.scale.y = pencil.scale.z = pencil.scale.x = 4;
+	pencil.scale.y = pencil.scale.z = pencil.scale.x = 40;
 	pencil.position.y = -6;
 	//pencil.position.x = 0;
 	pencil.position.z = 8;
 	
 	pencil.rotation.x = .5;
-	//group.add(pencil);
+	group.add(pencil);
 }; 
 
 // set up sine wave
 function updatePositions(){
 	var positions = wave.geometry.attributes.position.array; 
-	var y = z =x =index = 0;
+	var y = z =index = 0;
 	frames++;
 	phi = frames / 15;
 
 	for ( var i = 0, l = 630; i < l; i ++ ) {
 
-		positions[ index ++ ] = mouseX;
-		positions[ index ++ ] = mouseY;
+		positions[ index ++ ] = x;
+		positions[ index ++ ] = y;
 		positions[ index ++ ] = z;
 		
-		//y ++;
-		//var x = Math.sin(-y * frequency + phi) * amplitude / 2 ;
+		y ++;
+		var x = Math.sin(-y * frequency + phi) * amplitude / 2 ;
 		positionx = x + 8 ; // add offset to match pencil position
 	}
 };
