@@ -8,7 +8,7 @@
         "depthWrite":true,
         "DbgName":"Material #46",
         "visible":true,
-        "colorDiffuse":[0.568439,0.382425,0.363239],
+        "colorDiffuse":[0.439075,0.296319,0.281578],
         "wireframe":false,
         "colorEmissive":[0,0,0],
         "transparent":false,
