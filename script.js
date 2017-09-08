@@ -5,7 +5,7 @@ var mouseY= 0;
 var drawCount;
 var wave;
 var pencil;
-var positionx =0 ;
+var positionx ;
 
 var h = 200;
 var amplitude = h;
@@ -27,7 +27,7 @@ function init() {
 
 	// camera
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-	camera.position.set(0, 0, 800);
+	camera.position.set(0, 0, 500);
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
 
   
@@ -81,8 +81,8 @@ function init() {
 
 // generate plane
 function plane(){
-	var geometry = new THREE.BoxGeometry( 300, 1, 300 );
-	var material = new THREE.MeshBasicMaterial( {color: '#008b8b'} );
+	var geometry = new THREE.BoxGeometry( 500, 1, 500 );
+	var material = new THREE.MeshBasicMaterial( {color: '#fff'} );
 	var plane = new THREE.Mesh( geometry, material );
 	plane.receiveShadow = true;
 	plane.position.y = -2;
@@ -94,12 +94,12 @@ function plane(){
 function generatePencil(geometry, material){
 	geometry.computeVertexNormals();
 	pencil = new THREE.Mesh(geometry, material);
-	pencil.scale.y = pencil.scale.z = pencil.scale.x = 40;
-	pencil.position.y = -6;
-	//pencil.position.x = 0;
-	pencil.position.z = 8;
+	pencil.scale.y = pencil.scale.z = pencil.scale.x = 80;
+	pencil.position.y = 0;
 	
-	pencil.rotation.x = .5;
+	pencil.position.z = 72;
+	
+	pencil.rotation.x = -.30;
 	group.add(pencil);
 }; 
 
@@ -118,7 +118,7 @@ function updatePositions(){
 		
 		y ++;
 		var x = Math.sin(-y * frequency + phi) * amplitude / 2 ;
-		positionx = x + 8 ; // add offset to match pencil position
+		positionx = x - 84 ; // add offset to match pencil position
 	}
 };
 
@@ -143,15 +143,15 @@ function animate() {
 	requestAnimationFrame( animate );
  // position pencil on sine wave
     pencil ? pencil.position.x = positionx : null;
- 	//pencil ? pencil.rotation.z += .03 : null;
+ 	
   //draw sine
 	wave.geometry.setDrawRange( 0, 630 );
 	updatePositions();
 	wave.geometry.attributes.position.needsUpdate = true; 
 	
-	// group.rotation.y += .002;
-	// group.rotation.z += .001;
-	// group.rotation.x += .003;
+	 group.position.y += .02;
+	 group.position.z += .01;
+	 group.position.x += .01;
 	
 	group.rotation.y = mouseX * 2;
 	//group.rotation.z += mouseX * 2;
@@ -159,7 +159,3 @@ function animate() {
 	render();
 }; 
  
-
-
-// bedenking: hand maken en op mouse event lijn trekken
-// on mouse move x positie in vector array duwen
