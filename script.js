@@ -35,11 +35,10 @@ function init() {
 	scene = new THREE.Scene();
 	scene.updateMatrixWorld();
   
-	var light = new THREE.AmbientLight( "#F8845E", .8 ); 
+	var light = new THREE.AmbientLight( "0x999999 ", .8 ); 
 	scene.add( light );
-	var hemilight = new THREE.HemisphereLight( "#D66D75", "#26688F", 1.7 ); 
-	scene.add( hemilight ); 
-	dirLight = new THREE.DirectionalLight( '0xffffff', .6 );
+	
+	var dirLight = new THREE.DirectionalLight( '0xffffff', .6 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
 		dirLight.position.set( -1, 1.75, 1 );
 		dirLight.position.multiplyScalar( 50 ); 
@@ -82,11 +81,11 @@ function init() {
 
 // generate plane
 function plane(){
-	var geometry = new THREE.BoxGeometry( 500, 1, 500 );
-	var material = new THREE.MeshBasicMaterial( {color: 'sand'} );
+	var geometry = new THREE.BoxGeometry( 1000, 1, 1000 );
+	var material = new THREE.MeshBasicMaterial( {color: 'beige'} );
 	var plane = new THREE.Mesh( geometry, material );
 	plane.receiveShadow = true;
-	plane.position.y = -2;
+	plane.position.y = -100;
 	
 	group.add( plane );
 }; 
