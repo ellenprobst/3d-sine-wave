@@ -27,7 +27,7 @@ function init() {
   
 	// camera
 	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-	camera.position.set(0, 400, 400);
+	camera.position.set(0, 100, 500);
 	camera.lookAt(new THREE.Vector3(0, 0, 0));
        
             
@@ -37,7 +37,8 @@ function init() {
   
 	var light = new THREE.AmbientLight( "0x999999 ", .8 ); 
 	scene.add( light );
-	
+	var hemilight = new THREE.HemisphereLight( "#D66D75", "#26688F", 1.7 ); 
+	scene.add( hemilight ); 
 	var dirLight = new THREE.DirectionalLight( '0xffffff', .6 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
 		dirLight.position.set( -1, 1.75, 1 );
