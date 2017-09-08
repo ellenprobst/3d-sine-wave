@@ -149,7 +149,7 @@ function animate() {
 	updatePositions();
 	wave.geometry.attributes.position.needsUpdate = true; 
 	
-	 group.position.y += .02;
+	// group.position.y += .02;
 	 group.position.z += .01;
 	 group.position.x += .01;
 	
