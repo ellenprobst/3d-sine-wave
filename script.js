@@ -35,11 +35,11 @@ function init() {
 	scene = new THREE.Scene();
 	scene.updateMatrixWorld();
   
-	var light = new THREE.AmbientLight( "0x999999 ", .8 ); 
+	var light = new THREE.AmbientLight( 0x999999, .8 ); 
 	scene.add( light );
 	var hemilight = new THREE.HemisphereLight( "#D66D75", "#26688F", 1.7 ); 
 	scene.add( hemilight ); 
-	var dirLight = new THREE.DirectionalLight( '0xffffff', .6 );
+	var dirLight = new THREE.DirectionalLight( 0xffffff, .6 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
 		dirLight.position.set( -1, 1.75, 1 );
 		dirLight.position.multiplyScalar( 50 ); 
@@ -73,10 +73,13 @@ function init() {
 
 	group.position.y = -100;
 	group.position.x = -20;
+	group.position.z = -100;
 
 	scene.add(group);
 
-	//plane();
+	window.addEventListener( 'resize', onWindowResize, false );
+ 
+  //plane(); 
   
 };
 
@@ -132,6 +135,12 @@ function onMouseMove(event) {
   mouseY = - (event.clientY / window.innerHeight) * 2 + 1;
 };
 
+// on resize
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+}
 
 // render
 function render() {
@@ -150,8 +159,8 @@ function animate() {
 	updatePositions();
 	wave.geometry.attributes.position.needsUpdate = true; 
  
-	group.rotation.y = mouseX * 2;
-	group.rotation.x = mouseY * 2 ;
+	group.rotation.y = mouseX * 1.5;
+	group.rotation.x = mouseY * 1 ;
 
 	render();
 }; 
